@@ -9,7 +9,9 @@ export default function FeaturedCard({ property }: { property: Property }) {
     const router = useRouter()
     return (
         <TouchableOpacity className="w-96 mr-2 rounded-3xl overflow-hidden bg-white mb-4" style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 12, elevation: 4, opacity: property.is_sold ? 0.5 : 1 }} onPress={() => router.push(`/(root)/property/${property.id}`)} >
-            <Image source={{ uri: property.images[0] }} className="w-full h-52" resizeMode="cover" />
+            <Image source={
+                property.images.length > 0 ? { uri: property.images[0] } : require('@/assets/images/kribb.png')
+            } className="w-full h-52" resizeMode="cover" />
 
             <View className="absolute top-3 left-3 bg-white/90 rounded-full px-3 py-1">
                 <Text className="text-xs font-semibold text-blue-600 capitalize">

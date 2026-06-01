@@ -14,29 +14,24 @@ export const useUserSync = () => {
   }, [user]);
 
   const syncUser = async () => {
-    const { data } = await authSupabse
+    const { data, error } = await authSupabse
       .from("users")
+      .upsert(
+        {
+          clerk_id: user!.id,
+          email: user!.primaryEmailAddress?.emailAddress,
+          first_name: user!.firstName,
+          last_name: user!.lastName,
+          avatar_url: user!.imageUrl,
+        },
+        { onConflict: "clerk_id", ignoreDuplicates: false }
+      )
       .select("is_admin")
-      .eq("clerk_id", user!.id)
       .single();
 
-    if (data) {
-      setIsAdmin(data.is_admin ?? false);
+    if (error) {
+      console.error("Failed to sync user", error);
       return;
     }
-
-    const { data: newUser } = await authSupabse
-      .from("users")
-      .insert({
-        clerk_id: user!.id,
-        email: user!.emailAddresses[0].emailAddress,
-        first_name: user!.firstName,
-        last_name: user!.lastName,
-        avatar_url: user!.imageUrl,
-      })
-      .select("is_admin")
-      .single();
-
-    setIsAdmin(newUser?.is_admin ?? false);
-  };
-};
+    setIsAdmin(data?.is_admin ?? false);
+  };};

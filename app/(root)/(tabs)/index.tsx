@@ -5,8 +5,6 @@ import { Property } from '@/types';
 import { useUser } from '@clerk/expo';
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from 'expo-router';
-
-
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 
@@ -19,14 +17,13 @@ const HomeScreen = () => {
     const [recommended, setRecommended] = useState<Property[]>([])
     const [loading, setLoading] = useState(false)
 
-    console.log(featured, recommended)
 
     const fetchProperties = async () => {
         setLoading(true)
         const { data: featuredData } = await supabase
             .from("properties")
             .select("*")
-            .eq("is_featured", false)
+            .eq("is_featured", true)
             .order("created_at", { ascending: false })
 
         const { data: recommendedData } = await supabase
@@ -53,7 +50,6 @@ const HomeScreen = () => {
                 showsVerticalScrollIndicator={false}
                 ListHeaderComponent={
                     <View>
-
                         {/* Header */}
                         <View className="flex-row items-center justify-between px-5 pt-4 pb-5">
 
@@ -113,7 +109,7 @@ const HomeScreen = () => {
 
                 renderItem={({ item }) => (
                     <View className="px-5">
-                     <PropertyCard property={item} />
+                        <PropertyCard property={item} />
                     </View>
                 )}
 
